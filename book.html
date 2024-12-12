@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    /* FlipBook */
+
+    body {
+      /* or any other parent wrapper */
+      margin: 0;
+      display: flex;
+      min-height: 100dvh;
+      perspective: 1000px;
+      font: 1em/1.4 "Poppins", sans-serif;
+      overflow: hidden;
+      color: hsl(180 68% 5%);
+      /* background-image: radial-gradient(circle farthest-corner at 50% 50%, hsl(187 20% 88%) 30%, hsl(149 20% 94%) 100%); */
+    }
+
+    .book {
+      position: relative;
+      display: flex;
+      margin: auto;
+      width: 40cqmin;
+      /*1* let pointer event go trough pages of lower Z than .book */
+      pointer-events: none;
+      transform-style: preserve-3d;
+      transition: translate 1s;
+      translate: calc(min(var(--c), 1) * 50%) 0%;
+      /* Incline on the X axis for pages preview */
+      rotate: 1 0 0 30deg;
+    }
+
+    .page {
+      /* PS: Don't go below thickness 0.5 or the pages might transpare */
+      --thickness: 4;
+      flex: none;
+      display: flex;
+      width: 100%;
+      font-size: 2cqmin;
+      /*1* allow pointer events on pages */
+      pointer-events: all;
+      user-select: none;
+      transform-style: preserve-3d;
+      transform-origin: left center;
+      transition:
+        transform 1s,
+        rotate 1s ease-in calc((min(var(--i), var(--c)) - max(var(--i), var(--c))) * 50ms);
+      translate: calc(var(--i) * -100%) 0px 0px;
+      transform: translateZ(calc((var(--c) - var(--i) - 0.5) * calc(var(--thickness) * .23cqmin)));
+      rotate: 0 1 0 calc(clamp(0, var(--c) - var(--i), 1) * -180deg);
+    }
+
+    .front,
+    .back {
+      position: relative;
+      flex: none;
+      width: 100%;
+      backface-visibility: hidden;
+      overflow: hidden;
+      background-color: #fff;
+      /* Fix backface visibility Firefox: */
+      translate: 0px;
+    }
+
+    .back {
+      translate: -100% 0;
+      rotate: 0 1 0 180deg;
+    }
+
+    .back,
+    .front p {
+      font-size: 14px;
+    }
+
+
+    /* That's it. Your FlipBook customization styles: */
+
+    .book {
+      counter-reset: page -1;
+
+      & a {
+        color: inherit;
+      }
+    }
+
+    .page {
+      box-shadow: 0em .5em 1em -.2em #00000020;
+    }
+
+    .front,
+    .back {
+      display: flex;
+      flex-flow: column wrap;
+      /* justify-content: space-between; */
+      padding: 2em;
+      border: 1px solid #0002;
+
+      /* /* &:has(img) {
+        padding: 0;
+      } */
+
+      & img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      */ &::after {
+        position: absolute;
+        bottom: 1em;
+        counter-increment: page;
+        content: counter(page) ".";
+        font-size: 0.8em;
+      }
+    }
+
+    .front & img:not(.no-scale),
+    .back & img:not(.no-scale) {
+      padding: 100px;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .img-contain {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .img-contain img {
+      max-width: 150px;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    .cover {
+      &::after {
+        content: "";
+      }
+    }
+
+    .front {
+      &::after {
+        right: 1em;
+      }
+
+      background-image: url("./assets/img/bg.png");
+      ;
+      background-size: cover;
+      /* Pastikan gambar latar menutupi elemen */
+      background-position: center;
+      /* Atur posisi gambar */
+      background-repeat: no-repeat;
+      /* Hindari pengulangan */
+      border-radius: .1em .5em .5em .1em;
+    }
+
+
+    .back {
+      &::after {
+        left: 1em;
+      }
+
+      background-image: url("./assets/img/bg.png");
+      ;
+      background-size: cover;
+      /* Pastikan gambar latar menutupi elemen */
+      background-position: center;
+      /* Atur posisi gambar */
+      background-repeat: no-repeat;
+      /* Hindari pengulangan */
+      border-radius: .1em .5em .5em .1em;
+      border-radius: .5em .1em .1em .5em;
+    }
+
+    .cover {
+      background: radial-gradient(circle farthest-corner at 80% 20%, hsl(150 80% 20% / .3) 0%, hsl(170 60% 10% / .1) 100%),
+        hsl(231, 32%, 29%) url("./assets//img/photo_2024-12-11_15-50-32\ 1.png") 50% / cover;
+      color: hsl(200 30% 98%);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="book">
+    <div class="page">
+      <div class="front cover">
+        <h1>Nanti Kita Cerita Tentang Hari Bahagia</h1>
+        <p>2024.<br>Tereh Nikah</p>
+      </div>
+      <div class="back">
+        <h2>Prolog</h2>
+        <p>Sudah hampir 5 Tahun sejak mereka bertemu, segala lika-liku sudah mereka hadapi bersama. Akhirnya mereka
+          menyadari bahwa
+          selama ini orang yang mereka cari sudah ada di depan mata.
+          Cinta yang mereka tidak duga kehadirannya. Perlahan, manis, dan hangat hanya itu yang bisa menggambarkan kisah
+          cinta
+          mereka.
+
+          <i>“Red String Theory, hal yang selama ini ditertawakan ternyata terjadi pada hidup mereka”</i>.
+        </p>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <h2>Pertemuan Pertama</h2>
+        <p>Arsa mengenal Kika sejak 2019, mereka bertemu pertama kali di perusahaan tempat mereka bekerja.
+          Ditempatkan di satu tim yang sama membuat mereka berusaha saling mengenal.
+
+          Tidak pernah terpikirkan oleh Arsa maupun Kika, bahwa mereka akan memiliki hubungan lebih dari sekedar rekan
+          kerja.
+
+          Hari demi hari, bulan demi bulan, tahun berganti tahun, Arsa dan Kika bersahabat baik menjadi rekan kerja yang
+          saling
+          dapat mengandalkan.
+
+          Selama 5 tahun selain menjadi rekan kerja, mereka juga menjadi sahabat baik, banyak pria dan wanita yang
+          mampir
+          dikehidupan mereka,, setiap masa saling mendukung, bersama sama mencari pasangan sejati.</p>
+      </div>
+      <div class="back">
+        <img style="width: 100%; height: 100%; padding: 0; object-fit: cover;" src="https://picsum.photos/id/24/600/600" alt="Img 1">
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <h2>Benih Cinta</h2>
+        <p>Banyak manusia yang datang dan pergi di kehidupan mereka, tak satupun bertahan lama.
+
+          Lelah dengan banyak manusia yang silih berganti, hanya satu yang bertahan, Kika selalu ada untuk Arsa, begitu
+          pula Arsa
+          yang selalu ada untuk Kika.
+
+          Akhirnya mereka menyadari bahwa timbul rasa lebih dari sekedar peduli, cinta muncul tanpa mereka sadari.
+
+          Arsa dan Kika akhirnya menyadari bahwa mereka hanya membutuhkan satu sama lain selama ini.</p>
+      </div>
+      <div class="back">
+        <h2>Menuju Hari Bahagia</h2>
+        <p>Setelah perjalanan panjang, akhirnya Arsa dan Kika memutuskan untuk mengikat hubungan mereka di bawah payung
+          suci
+          pernikahan.</p>
+        <p>Arsa dan Kika berharap dapat membagi kebahagiaan mereka pada seluruh pembaca.</p>
+        <ul>
+          <li><strong>Hari/Tanggal:</strong> Sabtu, 11 Januari 2024</li>
+          <li><strong>Waktu:</strong> 10.00 s/d Selesai</li>
+          <li><strong>Agenda:</strong> Merayakan Kebahagiaan Baru</li>
+          <li><strong>Lokasi:</strong> Amanjiwo Resort, Magelang, Jawa Tengah</li>
+        </ul>
+
+        <div class="img-contain"><img class="no-scale" src="./assets/img/prewed.png" alt="Img 2">
+        </div>
+      </div>
+    </div>
+
+    <div class="page">
+      <div class="front">
+        <h2>Hari Bahagia</h2>
+        <p>Sampaikan pesan Bahagiamu untuk Arsa dan Kika.
+          Pesan terbaik akan mendapatkan kejutan di Hari Bahagia.</p>
+        <p>Kicau burung merdu di pagi hari,
+          Menyambut bahagia hari ini.
+          Arsa dan Kika telah resmi,
+          Semoga cinta kalian abadi</p>
+      </div>
+      <div class="back">
+        <h2>Epilog</h2>
+        <p>Halaman ini bukan merupakan penutup dari serangkaian kisah menuju hari bahagia Arsa dan Kika, tetapi akan menjadi tanda
+        bahwa kisah Bahagia mereka baru saja dimulai.
+        
+        Jadilah Bagian dari kisah Bahagia mereka.</p>
+      </div>
+    </div>
+
+
+
+    <div class="page">
+      <div class="front">
+        <img src="https://picsum.photos/id/1073/600/600" alt="Img 2">
+      </div>
+      <div class="back cover">
+        <h3>Terima Kasih</h3>
+        <p>Kode dan konsep FlipBook ini dibuat dengan penuh dedikasi.<br>
+          Gambar oleh: arahmanidal
+        </p>
+        <p>Kisah cinta ini adalah dedikasi kami kepada keluarga, sahabat, dan semua yang telah mendukung perjalanan kami.
+          Kami sangat bersyukur atas kehadiran dan doa yang diberikan.
+        </p>
+        <p>“Cinta itu sederhana, cukup saling memahami dan bersama.”</p>
+        <p>Hormat kami,<br><strong>Arsa & Kika</strong></p>
+      </div>
+    </div>
+  </div>
+
+</body>
+<script>
+  const flipBook = (elBook) => {
+    elBook.style.setProperty("--c", 0); // Set current page
+    elBook.querySelectorAll(".page").forEach((page, idx) => {
+      page.style.setProperty("--i", idx);
+      page.addEventListener("click", (evt) => {
+        if (evt.target.closest("a")) return;
+        const curr = evt.target.closest(".back") ? idx : idx + 1;
+        elBook.style.setProperty("--c", curr);
+      });
+    });
+  };
+
+  document.querySelectorAll(".book").forEach(flipBook);
+</script>
+
+</html>
